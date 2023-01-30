@@ -1,34 +1,34 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext } from "react";
 import Gifs from "./Gifs";
 import { getRandomGifs } from "./apiFetcher";
 import NavBar from "./NavBar"
 
+export const GifContext = createContext(null);
+
 function App() {
-  const [searchedGifs, setSearchedGifs] = useState([]);
-  const [randomGifs, setRandomGifs] = useState([]);
+  const [gifs, setGifs] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
 
     async function loadRandomGifs() {
-      setRandomGifs(await getRandomGifs(3));
+      if(!searchTerm.length) {
+        setGifs(await getRandomGifs(3));
+      }
     }
 
     loadRandomGifs()
-  }, [])
-
-  const gifs = searchedGifs.length ? searchedGifs : randomGifs
-  
-  // console.log(gifs)
-  // console.log("RANDOM GIFS", randomGifs)
+  }, [searchTerm])
 
   return (
-    <div className="bg-dark min-vh-100">
-      <div className="d-flex flex-column justify-content-center">
-        <NavBar setSearchedGifs={setSearchedGifs} />
-        <Gifs gifs={gifs} gifsType={"fixed_height"} />
+    <GifContext.Provider value={{gifs, setGifs, searchTerm, setSearchTerm}}>
+      <div className="bg-dark min-vh-100">
+        <div className="d-flex flex-column justify-content-center">
+          <NavBar />
+          <Gifs />
+        </div>
       </div>
-    </div>
-
+    </GifContext.Provider>
   );
 }
 

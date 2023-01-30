@@ -1,9 +1,9 @@
 const gifUrl = 'https://api.giphy.com/v1/gifs';
 const apiKey = process.env.REACT_APP_GIPHY_KEY
 
-export function getGifsFromQuery(searchTerm) {
-  const gifSearchUrl = `${gifUrl}/search?api_key=${apiKey}&q=${searchTerm}&limit=30&offset=0&rating=g&lang=en`;
-  const results = fetch(gifSearchUrl).then(res => res.json());
+export function getGifsFromQuery(searchTerm, offset=0) {
+  const gifSearchUrl = `${gifUrl}/search?api_key=${apiKey}&q=${searchTerm}&limit=30&offset=${offset}&rating=g&lang=en`;
+  const results = fetch(gifSearchUrl).then(res => res.json()).catch(err => console.error(err));
   return results;
 }
 
@@ -12,7 +12,12 @@ export async function getRandomGifs( count=3 ) {
   let promises = [];
 
   for(let i = 0; i<count; i++) {
-    promises.push(await fetch(randomGifUrl).then(res => res.json()).then(res => res.data))
+    promises.push(await fetch(randomGifUrl)
+      .then(res => res.json())
+      .then(res => {
+        return res.data
+      })
+      .catch(err => console.error(err)))
   }
 
   return promises;
