@@ -1,6 +1,7 @@
 # GIPHY Search by Caleb Gekeler
 
 App was built with `create-react-app`. Styling handled with Bootstrap and in-line JS styles for brevity.
+[Live site](https://stuller-th.netlify.app/)
 
 ## Features
 - [x] A user should have a clear way to search for GIFs.

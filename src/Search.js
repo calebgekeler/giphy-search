@@ -59,7 +59,7 @@ export default function Search() {
     <IconContext.Provider value={{ size: "2rem" }}>
       <form className="container-fluid d-flex" onSubmit={submitHandler} role="search">
         <div className="input-group">
-          <a className="navbar-brand" href="#" onClick={resetQueries}>GIPHY Search</a>
+          <a className="navbar-brand" href="/" onClick={resetQueries}>GIPHY Search</a>
           <input
             aria-describedby="basic-addon1"
             className="form-control"
