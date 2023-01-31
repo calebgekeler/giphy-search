@@ -22,7 +22,6 @@ export default function Search() {
 
     const delayTimer = setTimeout(() => {
       searchTerm.length > 2 && searchGifs();
-      setQuery(searchTerm ? `?q=${searchTerm}` : "");
     }, 500)
 
     return () => clearTimeout(delayTimer);
@@ -33,8 +32,8 @@ export default function Search() {
   }
 
   const submitHandler = (e) => {
-    e.preventDefault()
-    searchGifs()
+    e.preventDefault();
+    searchGifs();
   }
 
   const searchGifs = async (query) => {
@@ -52,7 +51,7 @@ export default function Search() {
 
   const resetQueries = () => {
     setQuery("");
-    setSearchTerm("")
+    setSearchTerm("");
   }
 
   return (

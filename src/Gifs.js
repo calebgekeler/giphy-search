@@ -1,6 +1,4 @@
-import React, { useState, useContext } from 'react'
-import { HiOutlineClipboardCopy } from "react-icons/hi";
-import { IconContext } from "react-icons";
+import React, { useState, useContext, useCallback } from 'react'
 import { GifContext } from './App';
 import { getGifsFromQuery } from './apiFetcher';
 import { useSearchParams } from "react-router-dom";
@@ -10,16 +8,21 @@ export default function Gifs() {
   const [paginator, setPaginator] = useState(0);
   const [query, setQuery] = useSearchParams();
 
-  const buttonStyles = {
-    border: "0",
-    backgroundColor: "transparent",
-    width: "100%",
-    paddingTop: "10px"
-  }
+  const triggerAlert = useCallback(() => {
+    const container = document.getElementById('alertContainer');
+    container.innerHTML = `
+      <div class="alert alert-success alter-dismissible text-center" role="alert">
+        Gif copied!
+      </div>
+    `
+    setTimeout(() => {
+      container.innerHTML = "";
+    }, 2000)
+  })
 
   const copyGif = async (url) => {
     await navigator.clipboard.writeText(url);
-    alert("The gif has been copied!");
+    triggerAlert();
   }
 
   const videoStyle = {
@@ -33,24 +36,25 @@ export default function Gifs() {
     setPaginator(tempOffset);
     const term = searchTerm || query.get("q")
     const result = await getGifsFromQuery(term, tempOffset)
-    setGifs(result.data);
-    window.scrollTo(0, 0);
+    setGifs(prevState => {
+      return [...prevState, ...result.data]
+    });
   }
 
   const mappedGifs = gifs?.map((gif) => {
     return (
-      <IconContext.Provider key={gif.id} value={{size: "2rem", color: "#6c757d"}}>
-        <div className="col-md-4 col-12">
-          <div className="card border-secondary text-bg-dark mb-3" style={{height: "390px"}}>
-            <div className="card-body d-flex justify-content-center align-items-center">
-              <video autoPlay="autoplay" loop={true} muted style={videoStyle}>
-                <source src={gif.images.original_mp4.mp4} type="video/mp4" />
-              </video>
-            </div>
-            <div className="card-footer border-secondary"><button style={buttonStyles} onClick={() => copyGif(gif.url)}><HiOutlineClipboardCopy /></button></div>
+      <div key={gif.id} className="col-md-4 col-12">
+        <div className="card border-secondary text-bg-dark mb-3" style={{height: "390px"}}>
+          <div className="card-body d-flex justify-content-center align-items-center">
+            <video autoPlay="autoplay" loop={true} muted style={videoStyle}>
+              <source src={gif.images.original_mp4.mp4} type="video/mp4" />
+            </video>
+          </div>
+          <div className="card-footer border-secondary d-flex justify-content-center">
+            <button className="btn btn-outline-primary" onClick={() => copyGif(gif.url)}>Copy the link!</button>
           </div>
         </div>
-      </IconContext.Provider>
+      </div>
     )
   })
 
@@ -59,8 +63,8 @@ export default function Gifs() {
       <div className="row g-3">
         {mappedGifs}
       </div>
-      <div className="d-flex justify-content-center">
-        {gifs.length > 3 ? <button onClick={getMoreGifs} className="btn btn-secondary">Show More</button> : null}
+      <div className="d-flex justify-content-center mt-5">
+        {gifs.length > 3 ? <button onClick={getMoreGifs} className="btn btn-outline-light">Show More</button> : null}
       </div>
     </div>
   );

@@ -9,16 +9,16 @@ export function getGifsFromQuery(searchTerm, offset=0) {
 
 export async function getRandomGifs( count=3 ) {
   const randomGifUrl = `${gifUrl}/random?api_key=${apiKey}`
-  let promises = [];
+  const results = [];
 
   for(let i = 0; i<count; i++) {
-    promises.push(await fetch(randomGifUrl)
+    results.push(await fetch(randomGifUrl)
       .then(res => res.json())
-      .then(res => {
-        return res.data
+      .then(json => {
+        return json.data
       })
-      .catch(err => console.error(err)))
+      .catch(err => console.error(err)));
   }
 
-  return promises;
+  return results;
 }
